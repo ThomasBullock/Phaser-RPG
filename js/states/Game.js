@@ -22,7 +22,14 @@ RPG.GameState = {
 
     this.loadLevel();
   },   
-  update: function() {    
+  update: function() {
+  
+    // player can't walk through walls
+    this.game.physics.arcade.collide(this.player, this.collisionLayer);
+    
+    // items collection
+    this.game.physics.arcade.overlap(this.player, this.items, this.collect, null, this);
+      
     // stop each time
     this.player.body.velocity.x = 0;
     this.player.body.velocity.y = 0;
@@ -112,7 +119,7 @@ RPG.GameState = {
     var chest = new RPG.Item(this, 100, 240, 'chest', {gold: 100});
     this.items.add(chest);   
     
-    var questItem = new RPG.Item(this, 100, 270, 'scroll', {gold: 100});
+    var questItem = new RPG.Item(this, 100, 270, 'scroll', {isQuest: true, questCode: 'magic-scroll'});
     this.items.add(questItem);                 
     
     this.initGUI();
@@ -136,5 +143,8 @@ RPG.GameState = {
       downright: true,
       action: true
     })  
+  },
+  collect: function(player, item) {
+    this.player.collectItems(item);
   }
 };

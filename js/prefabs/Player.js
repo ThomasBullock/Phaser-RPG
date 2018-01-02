@@ -17,3 +17,26 @@ RPG.Player = function(state, x, y, data) {
 
 RPG.Player.prototype = Object.create(Phaser.Sprite.prototype);
 RPG.Player.prototype.constructor = RPG.Player;
+
+RPG.Player.prototype.collectItems = function(item) {
+	console.log(item.key);
+	// two types of items, quest itesm and consumables 
+	if(item.data.isQuest) {
+		this.data.items.push(item);
+		console.log(this.data);			
+		// check quest completion		
+	}
+	else {
+		// consumable items
+		
+		// add properties
+		this.data.health += item.data.health ? item.data.health : 0;
+		this.data.attack += item.data.attack ? item.data.attack : 0;		
+		this.data.defense += item.data.defense ? item.data.defense : 0;		
+		this.data.gold += item.data.gold ? item.data.gold : 0;
+		
+		console.log(this.data);						
+	}
+	item.kill();
+	
+}
