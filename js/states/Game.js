@@ -97,7 +97,27 @@ RPG.GameState = {
     
     this.add.existing(this.player);
     
+    // group of items
+    this.items = this.add.group();
+    
+    var potion = new RPG.Item(this, 100, 150, 'potion', {health: 10});
+    this.items.add(potion);
+    
+    var sword = new RPG.Item(this, 100, 180, 'sword', {attack: 10});
+    this.items.add(sword);
+
+    var shield = new RPG.Item(this, 100, 210, 'shield', {defense: 2});
+    this.items.add(shield);      
+  
+    var chest = new RPG.Item(this, 100, 240, 'chest', {gold: 100});
+    this.items.add(chest);   
+    
+    var questItem = new RPG.Item(this, 100, 270, 'scroll', {gold: 100});
+    this.items.add(questItem);                 
+    
     this.initGUI();
+    
+    
   },
   gameOver: function() {
     this.game.state.start('Game', true, false, this.currentLevel);
