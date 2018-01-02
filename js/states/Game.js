@@ -17,9 +17,10 @@ RPG.GameState = {
   },
   create: function() {   
 
-    this.loadLevel();
+    this.game.onscreenControls = this.game.plugins.add(Phaser.Plugin.OnscreenControls);
+    // console.log(this.game.onscreenControls);
 
-    this.game.OnscreenControls = this.game.plugins.add(Phaser.Plugin.OnscreenControls);
+    this.loadLevel();
   },   
   update: function() {    
     
@@ -62,8 +63,25 @@ RPG.GameState = {
     this.player = new RPG.Player(this, 100, 100, playerData);
     
     this.add.existing(this.player);
+    
+    this.initGUI();
   },
   gameOver: function() {
     this.game.state.start('Game', true, false, this.currentLevel);
+  },
+  initGUI: function() {
+    //onscreen controls setup
+    // console.log(this.game.onscreenControls);
+    this.game.onscreenControls.setup(this.player, {
+      left: true,
+      right: true,
+      up: true,
+      down: true,
+      upleft: true,
+      downleft: true,
+      upright: true,
+      downright: true,
+      action: true
+    })  
   }
 };
