@@ -97,7 +97,18 @@ RPG.GameState = {
       gold: 100,
 
       // quest
-      quests: [] 
+      quests: [
+        {
+          name: 'Find The Magic Scroll',
+          code: 'magic-scroll',
+          isCompleted: false
+        },
+        {
+          name: 'Find The Helmet of the Gods',
+          code: 'gods-helmet',
+          isCompleted: false
+        }            
+      ] 
     };
 
     this.player = new RPG.Player(this, 100, 100, playerData);
@@ -107,24 +118,13 @@ RPG.GameState = {
     // group of items
     this.items = this.add.group();
     
-    var potion = new RPG.Item(this, 100, 150, 'potion', {health: 10});
-    this.items.add(potion);
+    this.loadItems(); 
     
-    var sword = new RPG.Item(this, 100, 180, 'sword', {attack: 10});
-    this.items.add(sword);
-
-    var shield = new RPG.Item(this, 100, 210, 'shield', {defense: 2});
-    this.items.add(shield);      
-  
-    var chest = new RPG.Item(this, 100, 240, 'chest', {gold: 100});
-    this.items.add(chest);   
-    
-    var questItem = new RPG.Item(this, 100, 270, 'scroll', {isQuest: true, questCode: 'magic-scroll'});
-    this.items.add(questItem);                 
+    // follow player with camer
+    this.game.camera.follow(this.player);
     
     this.initGUI();
-    
-    
+       
   },
   gameOver: function() {
     this.game.state.start('Game', true, false, this.currentLevel);
@@ -142,9 +142,64 @@ RPG.GameState = {
       upright: true,
       downright: true,
       action: true
-    })  
+    });
+    
+    this.showPlayerIcons();  
   },
   collect: function(player, item) {
     this.player.collectItems(item);
-  }
+  },
+  showPlayerIcons: function() {
+    // gold icon 
+    this.goldIcon = this.add.sprite(10, 10, 'coin');
+    this.goldIcon.fixedToCamera = true;
+    
+    var style = {font: '14px Arial', fill: '#fff' };
+    this.goldLabel = this.add.text(30, 10, '0', style);
+    this.goldLabel.fixedToCamera = true;
+    
+    // attack icon 
+    this.attackIcon = this.add.sprite(70, 10, 'sword');
+    this.attackIcon.fixedToCamera = true;
+    
+    var style = {font: '14px Arial', fill: '#fff' };
+    this.attackLabel = this.add.text(90, 10, '0', style);
+    this.attackLabel.fixedToCamera = true;
+    
+    // defense icon 
+    this.defenseIcon = this.add.sprite(130, 10, 'shield');
+    this.defenseIcon.fixedToCamera = true;
+    
+    var style = {font: '14px Arial', fill: '#fff' };
+    this.defenseLabel = this.add.text(150, 10, '0', style);
+    this.defenseLabel.fixedToCamera = true;
+    
+    this.refreshStats();         
+  },
+  refreshStats: function() {
+    this.goldLabel.text = this.player.data.gold;
+    this.attackLabel.text = this.player.data.attack;
+    this.defenseLabel.text = this.player.data.defense;        
+  },
+  findObjectsByType: function(targetType, tilemap, layer){
+    var result = [];
+    
+    tilemap.objects[layer].forEach(function(element){ 
+      if(element.properties.type == targetType) {
+        element.y -= tilemap.tileHeight/2; 
+        element.x -= tilemap.tileHeight/2;                
+        result.push(element);
+      }
+    }, this);
+    
+    return result;
+  },
+  loadItems: function() {
+    var elementsArr = this.findObjectsByType('item', this.map, 'objectsLayer');
+    console.log(elementsArr);
+    elementsArr.forEach(function(element){
+      elementObj = new RPG.Item(this, element.x, element.y, element.properties.asset, element.properties)
+      this.items.add(elementObj);
+    }, this);
+  }  
 };

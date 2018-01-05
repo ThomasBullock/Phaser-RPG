@@ -19,12 +19,12 @@ RPG.Player.prototype = Object.create(Phaser.Sprite.prototype);
 RPG.Player.prototype.constructor = RPG.Player;
 
 RPG.Player.prototype.collectItems = function(item) {
-	console.log(item.key);
+	console.log(item);
 	// two types of items, quest itesm and consumables 
 	if(item.data.isQuest) {
-		this.data.items.push(item);
-		console.log(this.data);			
-		// check quest completion		
+		this.data.items.push(item);	
+		// check quest completion
+		this.checkQuestCompletion(item);		
 	}
 	else {
 		// consumable items
@@ -35,8 +35,28 @@ RPG.Player.prototype.collectItems = function(item) {
 		this.data.defense += item.data.defense ? item.data.defense : 0;		
 		this.data.gold += item.data.gold ? item.data.gold : 0;
 		
-		console.log(this.data);						
+		// refresh stats
+		this.state.refreshStats();
+						
 	}
 	item.kill();
+	
+}
+
+RPG.Player.prototype.checkQuestCompletion = function(item) {
+	console.log(this);
+	
+	var i = 0;
+	var len = this.data.quests.length;
+	
+	while(i < len) {
+		if(this.data.quests[i].code == item.data.questCode) {
+			this.data.quests[i].isCompleted = true;
+			console.log(this.data.quests[i].name + ' has been completed');
+			break;
+		}
+		i++;
+	}
+	this.data.quests
 	
 }

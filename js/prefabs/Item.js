@@ -8,8 +8,11 @@ RPG.Item = function(state, x, y, key, data) {
   this.data = data;
   this.anchor.setTo(0.5);
 
-  // //walking animation
-  // this.animations.add('walk', [0, 1, 0], 6, false);
+  // make properties numbers
+  this.data.attack = +this.data.attack;
+  this.data.gold = +this.data.gold;
+  this.data.defense = +this.data.defense; 
+  this.data.health = +this.data.health;  
 
   //enable physics
   this.game.physics.arcade.enable(this);  
